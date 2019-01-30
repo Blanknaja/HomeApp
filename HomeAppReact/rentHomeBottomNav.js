@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 //import BottomNavigation from 'react-native-material-bottom-navigation'
 
 import BottomNavigation, {
@@ -8,6 +8,16 @@ import BottomNavigation, {
 
 export default class rentHomeBottomNav extends Component {
 
+  static navigationOptions = {
+    drawerLabel: 'บ้านมือสอง',
+    drawerIcon: ({ tintColor }) => (
+      <Image
+        source={require('./assert/house.png')}
+        style={[styles.icon, {tintColor: tintColor}]}
+      />
+    ),
+  };
+///////////// Not to use////////
 
     tabs = [
         {
@@ -44,7 +54,7 @@ export default class rentHomeBottomNav extends Component {
   render() {
     return (
       <View>
-        <Text> Renthome </Text>
+        <Text> บ้านชั้นนำ </Text>
         <BottomNavigation style = {{marginTop:400}}
           renderTab={this.renderTab}
           tabs={this.tabs}
@@ -68,3 +78,34 @@ export default class rentHomeBottomNav extends Component {
     return <View />
   }
 }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F5FCFF"
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: "center",
+    margin: 10
+  },
+  instructions: {
+    textAlign: "center",
+    color: "#333333",
+    marginBottom: 5
+  },
+  BottomNavBar: {
+    position: "absolute",
+    bottom: 0,
+    left: 0
+  },
+  bottom: {
+    flexDirection: "column",
+    flex: 1
+  },
+  icon: {
+    width: 24,
+    height: 24
+  }
+});

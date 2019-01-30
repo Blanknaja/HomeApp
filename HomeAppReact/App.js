@@ -36,12 +36,22 @@ import BottomNavigation, {
 } from "react-native-material-bottom-navigation";
 import rentHomeBottomNav from "./rentHomeBottomNav";
 import SecondHouseBottomNav from "./SecondHouseBottomNav";
+import NewsBottomNav from "./NewsBottomNav";
+import NewsBotomNav from "./NewsBottomNav";
+import EventBottomNav from "./EventBottomNav";
+import Logotitle from "./Logotitle";
 
+import { Appbar } from 'react-native-paper';
 
+_goBack = () => console.log('Went back');
 
+  _onSearch = () => console.log('Searching');
 
+  _onMore = () => console.log('Shown more');
 
 const DrawerContent = props => (
+  
+  
   <View>
     <View
       style={{
@@ -57,9 +67,15 @@ const DrawerContent = props => (
   </View>
 );
 
+
+
 ///Drawer
 class HomeScreen extends React.Component {
+
+ 
   static navigationOptions = {
+    
+  
     drawerLabel: "ค้นหาบ้านใหม่",
     drawerIcon: ({ tintColor }) => (
       <Image
@@ -68,6 +84,8 @@ class HomeScreen extends React.Component {
       />
     )
   };
+
+  
 
   constructor(props) {
     super(props);
@@ -90,43 +108,55 @@ class HomeScreen extends React.Component {
       key: "1stHome",
       icon: "home-heart",
       label: "บ้านชั้นนำ",
-      barColor: "#B71C1C",
+      barColor: "#0066CC",
       pressColor: "rgba(255, 255, 255, 0.16)"
     },
     {
       key: "2enHome",
       icon: "home-minus",
       label: "บ้านมือสอง",
-      barColor: "#B71C1C",
+      barColor: "#CC33CC",
       pressColor: "rgba(255, 255, 255, 0.16)"
     },
     {
       key: "news",
       icon: "newspaper",
       label: "ข่าว",
-      barColor: "#388E3C",
+      barColor: "#006699",
       pressColor: "rgba(255, 255, 255, 0.16)"
     },
     {
       key: "event",
       icon: "calendar-clock",
-      label: "อีเว้น",
-      barColor: "#E64A19",
+      label: "อีเว้นท์",
+      barColor: "#996600",
       pressColor: "rgba(255, 255, 255, 0.16)"
     }
   ];
 
   handleTabPress = (newTab, oldTab) => {
-    this.setState({ activeTab: newTab.key });
-    console.log("key =" + newTab.key);
-
+   this.setState({ activeTab: newTab.key });
+    console.log("newTab =" + newTab.key);
+   // this.props.navigation.navigate("HomePage");
+   console.log("OldTab =" + oldTab.key);
+   
     if (newTab.key == "newHome") {
-      this.props.navigation.navigate("Home");
-    } else if (newTab.key == "1stHome") {
-      this.props.navigation.navigate("rentHomeBottomNav");
-    } else if (newTab.key == "2enHome") {
-      this.props.navigation.navigate("rentHomeBottomNav");
+      this.props.navigation.navigate("Home")
+      this.setState({ activeTab: "newHome" });
+    }else if(newTab.key == "1stHome"){
+      this.props.navigation.navigate("HomePage")
+      this.setState({ activeTab: "newHome" });
+    }else if(newTab.key == "2enHome"){
+      this.props.navigation.navigate("SecondHouseBottomNav");
+      this.setState({ activeTab: "newHome" });
+    }else if(newTab.key == "news"){
+      this.props.navigation.navigate("NewsBottomNav");
+      this.setState({ activeTab: "newHome" });
+    }else if(newTab.key == "event"){
+      this.props.navigation.navigate("EventBottomNav");
+      this.setState({ activeTab: "newHome" });
     }
+
   };
 
   _handleOpenDrawer() {
@@ -134,10 +164,16 @@ class HomeScreen extends React.Component {
   }
   render() {
     return (
-      <View style={{ backgroundColor: "red", flex: 1 }}>
+
+  
+      
+      <View style={styles.MainContainer}>
+
+       
+      
         {/* Your screen contents depending on current tab. */}
 
-        <Text>Home Screen</Text>
+        
         <Button title="Go to Home" onPress={this._handleOpenDrawer} />
         <Button
           title="Go to HomePage"
@@ -146,15 +182,18 @@ class HomeScreen extends React.Component {
 
         <Text> Click tab = {this.state.activeTab}</Text>
 
-        <View style={styles.BottomNavigation}>
-          <BottomNavigation
+        <View style={styles.bottomViewNav}>
+          <BottomNavigation 
+          
             activeTab={this.state.activeTab}
             onTabPress={this.handleTabPress}
             renderTab={this.renderTab}
             tabs={this.tabs}
           />
         </View>
+        
       </View>
+     
     );
   }
 
@@ -262,22 +301,27 @@ class MyNotificationsScreen extends React.Component {
 const MyDrawerNavigator = createDrawerNavigator(
   {
     Home: {
-      screen: HomeScreen
+      screen: HomeScreen,
+      
     },
     HomePage: {
       screen: HomePage
     },
-    rentHomeBottomNav: {
-      screen: rentHomeBottomNav
-    },
+   
     SecondHouseBottomNav: {
       screen: SecondHouseBottomNav
     },
-    
+    NewsBottomNav:{
+      screen: NewsBottomNav
+    },
+    EventBottomNav:{
+      screen:EventBottomNav
+    },
     
   },
   {
-    contentComponent: DrawerContent
+    contentComponent: DrawerContent,
+    
   }
 );
 const MyApp = createAppContainer(MyDrawerNavigator);
@@ -318,5 +362,29 @@ const styles = StyleSheet.create({
   icon: {
     width: 24,
     height: 24
-  }
+  },
+  MainContainer:{
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+     // backgroundColor: '#F4EFAF',
+      paddingTop: ( Platform.OS === 'ios' ) ? 20 : 0
+  },
+  bottomViewNav:{
+ 
+    width: '100%', 
+      height: 50, 
+      justifyContent: 'center', 
+     // alignItems: 'center',
+      position: 'absolute',
+     // backgroundColor: '#F4E',
+      bottom: 0,
+      
+  },  bottomBar: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    marginBottom: 610
+  },
 });
