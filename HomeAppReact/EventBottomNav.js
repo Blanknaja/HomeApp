@@ -24,21 +24,34 @@ import BottomNavigation, {
   FullTab
 } from "react-native-material-bottom-navigation";
 //import rentHomeBottomNav from "./rentHomeBottomNav";
+import{ 
+  Header,
+  SearchBar, } from "react-native-elements";
+import { Dimensions } from "react-native"
+
+
+const { width, height } = Dimensions.get("window")
+
+
+
+const screenWidth = width < height ? width : height
+const screenHeight = width < height ? height : width
 
 export default class EventBottomNav extends Component {
-    static navigationOptions = {
-        drawerLabel: "อีเว้นท์",
-        drawerIcon: ({ tintColor }) => (
-          <Image
-            source={require("./assert/house.png")}
-            style={[styles.icon, { tintColor: tintColor }]}
-          />
-        )
-      };
+  static navigationOptions = {
+    drawerLabel: "อีเว้นท์",
+    drawerIcon: ({ tintColor }) => (
+      <Image
+        source={require("./assert/house.png")}
+        style={[styles.icon, { tintColor: tintColor }]}
+      />
+    )
+  };
   constructor(props) {
     super(props);
     this.state = {
-        activeTab: "event"
+      activeTab: "event",
+      colorIcon : "#fff",
     };
   }
 
@@ -47,7 +60,7 @@ export default class EventBottomNav extends Component {
       key: "newHome",
       icon: "magnify",
       label: "บ้านใหม่",
-      barColor: "#388E3C",
+      barColor: "#0066CC",
       pressColor: "rgba(255, 255, 255, 0.16)"
     },
     {
@@ -61,67 +74,73 @@ export default class EventBottomNav extends Component {
       key: "2enHome",
       icon: "home-minus",
       label: "บ้านมือสอง",
-      barColor: "#CC33CC",
+      barColor: "#0066CC",
       pressColor: "rgba(255, 255, 255, 0.16)"
     },
     {
       key: "news",
       icon: "newspaper",
       label: "ข่าว",
-      barColor: "#006699",
+      barColor: "#0066CC",
       pressColor: "rgba(255, 255, 255, 0.16)"
     },
     {
       key: "event",
       icon: "calendar-clock",
       label: "อีเว้น",
-      barColor: "#996600",
+      barColor: "#0066CC",
       pressColor: "rgba(255, 255, 255, 0.16)"
     }
   ];
 
   handleTabPress = (newTab, oldTab) => {
     this.setState({ activeTab: newTab.key });
-     console.log("newTab =" + newTab.key);
+    console.log("newTab =" + newTab.key);
     // this.props.navigation.navigate("HomePage");
     console.log("OldTab =" + oldTab.key);
-    
-     if (newTab.key == "newHome") {
-       this.props.navigation.navigate("Home")
-       this.setState({ activeTab: "event" });
-     }else if(newTab.key == "1stHome"){
-       this.props.navigation.navigate("HomePage")
-       this.setState({ activeTab: "event" });
-     }else if(newTab.key == "2enHome"){
-       this.props.navigation.navigate("SecondHouseBottomNav");
-       this.setState({ activeTab: "event" });
-     }else if(newTab.key == "news"){
-       this.props.navigation.navigate("NewsBottomNav");
-       this.setState({ activeTab: "event" });
-     }else if(newTab.key == "event"){
-        this.props.navigation.navigate("EventBottomNav");
-        this.setState({ activeTab: "event" });
-      }
- 
-   };
+
+    if (newTab.key == "newHome") {
+      this.props.navigation.navigate("Home");
+      this.setState({ activeTab: "event" });
+    } else if (newTab.key == "1stHome") {
+      this.props.navigation.navigate("HomePage");
+      this.setState({ activeTab: "event" });
+    } else if (newTab.key == "2enHome") {
+      this.props.navigation.navigate("SecondHouseBottomNav");
+      this.setState({ activeTab: "event" });
+    } else if (newTab.key == "news") {
+      this.props.navigation.navigate("NewsBottomNav");
+      this.setState({ activeTab: "event" });
+    } else if (newTab.key == "event") {
+      this.props.navigation.navigate("EventBottomNav");
+      this.setState({ activeTab: "event" });
+    }
+  };
 
   render() {
     return (
-        <View style={styles.MainContainer}>
-        {/* Your screen contents depending on current tab. */}
-
-        <Text>Home Screen</Text>
-        <Button title="Go to Home" onPress={this._handleOpenDrawer} />
-        <Button
-          title="Go to Event naja"
-          onPress={() => this.props.navigation.navigate("HomePage")}
+      <View style={styles.containerLayout}>
+        <Header
+          statusBarProps={{ barStyle: "light-content" }}
+          barStyle="light-content" // or directly
+          leftComponent={{
+            icon: "menu",
+            color: "#fff",
+            onPress: () => {
+              this.props.navigation.openDrawer();
+            }
+          }}
+          centerComponent={{ text: "บ้านใหม่", style: { color: "#fff" } }}
+          containerStyle={{
+            backgroundColor: "#0066CC",
+            justifyContent: "space-around"
+          }}
         />
 
-        <Text> Click tab = {this.state.activeTab}</Text>
+        <View style={[styles.box2]} />
 
-        <View style={styles.bottomViewNav}>
+        <View style={[styles.BottomNavBar]}>
           <BottomNavigation
-          
             activeTab={this.state.activeTab}
             onTabPress={this.handleTabPress}
             renderTab={this.renderTab}
@@ -149,7 +168,7 @@ export default class EventBottomNav extends Component {
       <Icon
         size={30}
         type="material-community"
-        color="#000000"
+        color ={this.state.colorIcon}
         name={iconName}
       />
     );
@@ -157,51 +176,87 @@ export default class EventBottomNav extends Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "#F5FCFF"
-    },
-    welcome: {
-      fontSize: 20,
-      textAlign: "center",
-      margin: 10
-    },
-    instructions: {
-      textAlign: "center",
-      color: "#333333",
-      marginBottom: 5
-    },
-    BottomNavBar: {
-      position: "absolute",
-      bottom: 0,
-      left: 0
-    },
-    bottom: {
-      flexDirection: "column",
-      flex: 1
-    },
-    icon: {
-      width: 24,
-      height: 24
-    },
-    MainContainer:{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#F4EFAF',
-        paddingTop: ( Platform.OS === 'ios' ) ? 20 : 0
-    },
-    bottomViewNav:{
-   
-      width: '100%', 
-        height: 50, 
-        justifyContent: 'center', 
-       // alignItems: 'center',
-        position: 'absolute',
-       // backgroundColor: '#F4E',
-        bottom: 0,
-        
-    },
-  });
+  container: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F5FCFF"
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: "center",
+    margin: 10
+  },
+  instructions: {
+    textAlign: "center",
+    color: "#333333",
+    marginBottom: 5
+  },
+  BottomNavBar: {
+    position: "absolute",
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
+  bottom: {
+    flexDirection: "column",
+    flex: 1
+  },
+  icon: {
+    width: 24,
+    height: 24
+  },
+  MainContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    // backgroundColor: '#F4EFAF',
+    paddingTop: Platform.OS === "ios" ? 20 : 0
+  },
+  bottomViewNav: {
+    width: "100%",
+    height: 50,
+    justifyContent: "center",
+    // alignItems: 'center',
+    position: "absolute",
+    // backgroundColor: '#F4E',
+    bottom: 0
+  },
+  bottomBar: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    marginBottom: 610
+  },
+  containerLayout: {
+    //width: screenWidth ,
+    //height: screenHeight ,
+    // flex: 1,
+    // width:"100%",
+
+    // backgroundColor:'#4286f4',
+    flex: 0,
+    flexGrow: 1,
+    flexDirection: "column",
+    width: null,
+    height: null
+  },
+  box1: {
+    flex: 1
+    // backgroundColor: "#2196F3"
+  },
+  box2: {
+    flex: 10,
+    backgroundColor: "#FFF"
+    //flex: 0,
+    // flexGrow: 15,
+  },
+  box3: {
+    flex: 1
+    //backgroundColor: "#e3aa1a"
+    //flex: 0,
+    // flexGrow: 1,
+  }
+});
