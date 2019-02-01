@@ -17,6 +17,7 @@ import {
   Alert,
   Image,
   TouchableHightLight,
+  Picker
 } from "react-native";
 
 import {
@@ -55,7 +56,11 @@ import {
 } from "react-native-responsive-screen";
 
 //import AtoZListView from 'react-native-atoz-listview';
-import Search from 'react-native-search-box';
+import Search from "react-native-search-box";
+
+import ReactNativeItemSelect from "react-native-item-select";
+
+import selectCard from "./testPicker/Home";
 
 const { width, height } = Dimensions.get("window");
 
@@ -67,7 +72,16 @@ _onMore = () => console.log("Shown more");
 
 const screenWidth = width < height ? width : height;
 const screenHeight = width < height ? height : width;
-var redcolor = '#fff'
+var redcolor = "#fff";
+const textStyle = { textAlign: "center", color: "#696969", fontWeight: "bold" };
+const dataforPicker = [
+  { picPicker: "அ", description: "บ้านเดี่ยว", name: "Tamil" },
+  { picPicker: "B", description: "บ้านแฝด", name: "English" },
+  { picPicker: "B", description: "ทาวน์เฮ้าส์", name: "English" },
+  { picPicker: "B", description: "คอนโดมิเนียม", name: "English" },
+  { picPicker: "B", description: "อาคารพาณิชย์", name: "English" },
+  { picPicker: "B", description: "ทาวน์โฮม", name: "English" }
+];
 
 let pic = {
   uri: "https://www.home.co.th/images/logo-share.png"
@@ -113,29 +127,46 @@ class HomeScreen extends React.Component {
       activeTab: "newHome",
       colorIcon: "#fff",
       search: "",
+     
+      
+      single_home_Picker: [],
+      Twin_Home_Picker: '',
+      TownHouse_Picker: '',
+      Condo_Picker:'',
+      Panid_Picker:'',
+      TownHome_Picker:'',
 
+      dataPicker: [
+        { picIcon: "A", description: "บ้านเดี่ยว", name: "Tamil" },
+        { picIcon: "B", description: "บ้านแฝด", name: "English" },
+        { picIcon: "C", description: "ทาวน์เฮ้าส์", name: "Tamil" },
+        { picIcon: "D", description: "คอนโดมิเนียม", name: "Tamil" },
+        { picIcon: "E", description: "อาคารพาณิชย์", name: "Tamil" },
+        { picIcon: "F", description: "ทาวน์โฮม", name: "Tamil" }
+      ],
+        
       data: {
-        "A": [
+        A: [
           {
-            "name": "Anh Tuan Nguyen",
-            "age": 28
+            name: "Anh Tuan Nguyen",
+            age: 28
           },
           {
-            "name": "An Nhien",
-            "age": 2
-          },
+            name: "An Nhien",
+            age: 2
+          }
         ],
-        "Z": [
+        Z: [
           {
-            "name": "Thanh Tu Pham",
-            "age": 32
+            name: "Thanh Tu Pham",
+            age: 32
           },
           {
-            "name": "Tien Thanh",
-            "age": 24
-          },
+            name: "Tien Thanh",
+            age: 24
+          }
         ]
-      },
+      }
     };
   }
 
@@ -213,48 +244,47 @@ class HomeScreen extends React.Component {
     this.props.navigation.openDrawer();
   }
 
+  ///Search
 
-///Search
+  renderRow = (item, sectionId, index) => {
+    return (
+      <TouchableHightLight
+        style={{
+          height: rowHeight,
+          justifyContent: "center",
+          alignItems: "center"
+        }}
+      >
+        <Text>{item.name}</Text>
+      </TouchableHightLight>
+    );
+  };
 
-renderRow = (item, sectionId, index) => {
-  return (
-    <TouchableHightLight
-      style={{
-        height: rowHeight,
-        justifyContent: 'center',
-        alignItems: 'center'}}
-    >
-      <Text>{item.name}</Text>
-    </TouchableHightLight>
-  );
-}
-
-beforeFocus = () => {
-  return new Promise((resolve, reject) => {
-      console.log('beforeFocus');
+  beforeFocus = () => {
+    return new Promise((resolve, reject) => {
+      console.log("beforeFocus");
       resolve();
-  });
-}
+    });
+  };
 
-onFocus = (text) => {
-  return new Promise((resolve, reject) => {
-      console.log('onFocus', text);
+  onFocus = text => {
+    return new Promise((resolve, reject) => {
+      console.log("onFocus", text);
       resolve();
-  });
-}
+    });
+  };
 
-// Important: You must return a Promise
-afterFocus = () => {
-  return new Promise((resolve, reject) => {
-      console.log('afterFocus');
+  // Important: You must return a Promise
+  afterFocus = () => {
+    return new Promise((resolve, reject) => {
+      console.log("afterFocus");
       resolve();
-  });
-}
+    });
+  };
 
+  ////end Search
 
-////end Search
-
-
+  
   render() {
     const { search } = this.state;
     return (
@@ -307,10 +337,25 @@ afterFocus = () => {
         <View style={[styles.box2]}>
           <View style={styles.searchbarnaja}>
             <Search
-            ref="search_box"
-            backgroundColor = '#F44336'
-            placeholderTextColor = '#000000'
+              ref="search_box"
+              backgroundColor="#F44336"
+              placeholderTextColor="#000000"
             />
+            <View style={styles.Picker}>
+              <ReactNativeItemSelect
+                data={this.state.dataPicker}
+                itemComponent={item => (
+              <View>
+                <Text style={{ ...textStyle, fontSize: 35 }}>{item.picIcon}</Text>
+                <Text style={textStyle}>{item.description}</Text>
+              </View>
+                )}
+                onSubmit={item => this.handelgetData(item)}
+                multiselect = {true}
+                />
+            
+             
+            </View>
           </View>
         </View>
 
@@ -324,6 +369,25 @@ afterFocus = () => {
         </View>
       </View>
     );
+  }
+  handelgetData(item){
+    console.log(item)
+    console.log(item.description)
+    const data = JSON.stringify(item)
+    
+    
+
+    /*item.map((function(news , i){
+      key ={i},
+    console.log(news.description),
+    console.log(i)
+
+    if(news.description == 'บ้านเดี่ยว'){
+      this.setState({itemInpick : new.description})
+    }else if (news.description == 'บ้านแฝด'){
+      
+    }
+    }))*/
   }
 
   renderTab = ({ tab, isActive }) => {
@@ -542,7 +606,12 @@ const styles = StyleSheet.create({
   },
   searchbarnaja: {
     height: hp("6%"),
-    width: wp("100%"),
+    width: wp("100%")
     //backgroundColor: "red"
+  },
+  Picker: {
+    height: hp("60%"),
+    width: wp("100%"),
+    backgroundColor: "#e3aa1a"
   }
 });
