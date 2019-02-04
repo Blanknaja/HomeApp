@@ -1,12 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- * @lint-ignore-every XPLATJSCOPYRIGHT1
- */
-
 import React, { Component } from "react";
 import {
   Platform,
@@ -19,7 +10,12 @@ import {
   TouchableHightLight,
   Picker
 } from "react-native";
-
+import { Dimensions } from "react-native";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp
+} from "react-native-responsive-screen";
+import { Header, Button } from "react-native-elements";
 import {
   createStackNavigator,
   createAppContainer,
@@ -30,9 +26,6 @@ import {
 } from "react-navigation";
 import HomePage from "./HomePage";
 import { Icon } from "react-native-elements";
-
-///bottom
-//import BottomNavigation from "react-native-material-bottom-navigation";
 import BottomNavigation, {
   FullTab
 } from "react-native-material-bottom-navigation";
@@ -43,42 +36,15 @@ import NewsBotomNav from "./NewsBottomNav";
 import EventBottomNav from "./EventBottomNav";
 import Logotitle from "./Logotitle";
 import Slider from "react-native-slider";
-
-import { Appbar } from "react-native-paper";
-//import { Header } from "react-native-elements/src/header/Header";
-
-import { Header, Button } from "react-native-elements";
-import { Dimensions } from "react-native";
-
-///responsive
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp
-} from "react-native-responsive-screen";
-
-//import AtoZListView from 'react-native-atoz-listview';
 import Search from "react-native-search-box";
-
 import ReactNativeItemSelect from "react-native-item-select";
 
-import selectCard from "./testPicker/Home";
+var { height } = Dimensions.get("window");
 
-const { width, height } = Dimensions.get("window");
-
-_goBack = () => console.log("Went back");
-
-_onSearch = () => console.log("Searching");
-
-_onMore = () => console.log("Shown more");
-
-const screenWidth = width < height ? width : height;
-const screenHeight = width < height ? height : width;
-var redcolor = "#fff";
+var box_count = 3;
+var box_height = height / box_count;
 const textStyle = { textAlign: "center", color: "#696969", fontWeight: "bold" };
 
-let pic = {
-  uri: "https://www.home.co.th/images/logo-share.png"
-};
 ///Header Drawer
 const DrawerContent = props => (
   <View>
@@ -99,9 +65,6 @@ const DrawerContent = props => (
     <DrawerItems {...props} />
   </View>
 );
-
-var search = "ค้นหา";
-///Drawer
 class HomeScreen extends React.Component {
   static navigationOptions = {
     drawerLabel: "ค้นหาบ้านใหม่",
@@ -307,68 +270,45 @@ class HomeScreen extends React.Component {
   };
 
   /*change(value) {
-    this.setState(() => {
-      return {
-        value: parseFloat(value)
-      };
-    });
-  }*/
+      this.setState(() => {
+        return {
+          value: parseFloat(value)
+        };
+      });
+    }*/
 
   ////end Search
 
   render() {
     const { search } = this.state;
     return (
-      // <View style={styles.MainContainer}>
-      //   <Header
-      //     placement="left"
-      //     leftComponent={{ icon: "menu", color: "#fff" }}
-      //     centerComponent={{ text: "MY TITLE", style: { color: "#fff" } }}
-      //     rightComponent={{ icon: "home", color: "#fff" }}
-      //   />
-
-      //   {/* Your screen contents depending on current tab. */}
-
-      //  <Button title="Go to Home" onPress={this._handleOpenDrawer} />
-      //   <Button
-      //     title="Go to HomePage"
-      //     onPress={() => this.props.navigation.navigate("HomePage")}
-      //   />
-
-      //   <Text> Click tab = {this.state.activeTab}</Text>
-
-      //   <View style={styles.bottomViewNav}>
-      //     <BottomNavigation
-      //       activeTab={this.state.activeTab}
-      //       onTabPress={this.handleTabPress}
-      //       renderTab={this.renderTab}
-      //       tabs={this.tabs}
-      //     />
-      //   </View>
-      // </View>
-
-      <View style={styles.containerLayout}>
-        <Header
-          statusBarProps={{ barStyle: "light-content" }}
-          barStyle="light-content" // or directly
-          leftComponent={{
-            icon: "menu",
-            color: "#fff",
-            onPress: () => {
-              this.props.navigation.openDrawer();
-            }
-          }}
-          centerComponent={{
-            text: "บ้านใหม่",
-            style: { color: "#fff", fontSize: 25, fontWeight: "bold" }
-          }}
-          containerStyle={{
-            backgroundColor: "#0066CC",
-            justifyContent: "space-around"
-          }}
-        />
-        <View style={[styles.box2]}>
-          <View style={styles.searchbarnaja}>
+      <View style={styles.container}>
+        <View style={[styles.header]}>
+          <Header
+            statusBarProps={{ barStyle: "light-content" }}
+            barStyle="light-content" // or directly
+            leftComponent={{
+              icon: "menu",
+              color: "#fff",
+              onPress: () => {
+                this.props.navigation.openDrawer();
+              }
+            }}
+            centerComponent={{
+              text: "บ้านใหม่",
+              style: { color: "#fff", fontSize: 25, fontWeight: "bold" }
+            }}
+            containerStyle={{
+              backgroundColor: "#0066CC",
+              justifyContent: "space-around",
+              height: hp("15%")
+            }}
+          />
+        </View>
+        {/* Main */}
+        <View style={[styles.content]}>
+          {/* Search in Main */}
+          <View style={styles.vSearch}>
             <Search
               ref="search_box"
               backgroundColor="#F44336"
@@ -376,16 +316,8 @@ class HomeScreen extends React.Component {
             />
           </View>
 
-          <View
-            style={styles.Picker}
-            onLayout={event => {
-              const layout = event.nativeEvent.layout;
-              console.log("height:", layout.height);
-              console.log("width:", layout.width);
-              console.log("x:", layout.x);
-              console.log("y:", layout.y);
-            }}
-          >
+          {/* Picker in Main */}
+          <View style={styles.vPicker}>
             <ReactNativeItemSelect
               data={this.state.dataPicker}
               itemComponent={(item, selected) => (
@@ -432,28 +364,11 @@ class HomeScreen extends React.Component {
               }}
             />
           </View>
-
-          <View style={styles.vSlider}>
-            <Slider
-              value={this.state.value}
-              onValueChange={value => this.setState({ value })}
-              step={1}
-              minimumValue={0}
-              maximumValue={10}
-              maximumTrackTintColor="#FFF"
-              trackStyle={customStyles2.track}
-              thumbStyle={customStyles2.thumb}
-              minimumTrackTintColor="#F44336"
-            />
-            <Text>Value: {this.state.value}</Text>
-            {/* <View style={styles.vButton}>
-                <Button style={{ backgroundColor: "#f4511e" }} title="แผนที่" />
-              </View> */}
-          </View>
         </View>
-        
-        <View style={[styles.BottomNavBar]}>
+        {/* Foot */}
+        <View style={[styles.footer]}>
           <BottomNavigation
+             style={styles.vBottomSheet}
             activeTab={this.state.activeTab}
             onTabPress={this.handleTabPress}
             renderTab={this.renderTab}
@@ -469,16 +384,16 @@ class HomeScreen extends React.Component {
     const data = JSON.stringify(item);
 
     /*item.map((function(news , i){
-      key ={i},
-    console.log(news.description),
-    console.log(i)
-
-    if(news.description == 'บ้านเดี่ยว'){
-      this.setState({itemInpick : new.description})
-    }else if (news.description == 'บ้านแฝด'){
-      
-    }
-    }))*/
+        key ={i},
+      console.log(news.description),
+      console.log(i)
+  
+      if(news.description == 'บ้านเดี่ยว'){
+        this.setState({itemInpick : new.description})
+      }else if (news.description == 'บ้านแฝด'){
+        
+      }
+      }))*/
   }
 
   renderTab = ({ tab, isActive }) => {
@@ -504,81 +419,6 @@ class HomeScreen extends React.Component {
     );
   };
 }
-/*const AppNavigator = createStackNavigator(
-  {
-    // Home: HomeScreen,
-    //Details: DetailsScreen,
-
-    Home: {
-      screen: HomeScreen
-    },
-    Details: {
-      screen: DetailsScreen
-    },
-    HomePage: {
-      screen: HomePage
-    },
-    rentHomeBottomNav:{
-      screen: rentHomeBottomNav
-    },
-  },
-  {
-    initialRouteName: "Home",
-    defaultNavigationOptions: {
-      headerStyle: {
-        backgroundColor: "#f4511e"
-      },
-      headerTintColor: "#fff",
-      headerTitleStyle: {
-        fontWeight: "bold"
-      }
-    }
-  }
-);*/
-
-//const AppContainer = createAppContainer(AppNavigator);
-//////////////////
-class MyHomeScreen extends React.Component {
-  static navigationOptions = {
-    drawerLabel: "Home",
-    drawerIcon: ({ tintColor }) => (
-      <Image
-        source={require("./assert/house.png")}
-        style={[styles.icon, { tintColor: tintColor }]}
-      />
-    )
-  };
-  render() {
-    return (
-      <Button
-        onPress={() => this.props.navigation.navigate("Notifications")}
-        title="Go to notifications"
-      />
-    );
-  }
-}
-
-class MyNotificationsScreen extends React.Component {
-  static navigationOptions = {
-    drawerLabel: "Notifications",
-    drawerIcon: ({ tintColor }) => (
-      <Image
-        source={require("./assert/house.png")}
-        style={[styles.icon, { tintColor: tintColor }]}
-      />
-    )
-  };
-
-  render() {
-    return (
-      <Button
-        onPress={() => this.props.navigation.goBack()}
-        title="Go back home"
-      />
-    );
-  }
-}
-
 const MyDrawerNavigator = createDrawerNavigator(
   {
     Home: {
@@ -603,9 +443,7 @@ const MyDrawerNavigator = createDrawerNavigator(
   }
 );
 const MyApp = createAppContainer(MyDrawerNavigator);
-////////////
-
-export default class App extends React.Component {
+export default class App1 extends Component {
   render() {
     return <MyApp />;
   }
@@ -616,175 +454,55 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF"
+    backgroundColor: "#010000"
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: "center",
-    margin: 10
-  },
-  instructions: {
-    textAlign: "center",
-    color: "#333333",
-    marginBottom: 5
-  },
-  BottomNavBar: {
+  header: {
+    height: hp("15%"),
     position: "absolute",
     left: 0,
-    bottom: 0,
-    right: 0
+    right: 0,
+    top: 0,
+    backgroundColor: "#03A9F4",
+    zIndex: 10
   },
-  bottom: {
-    flexDirection: "column",
-    flex: 1
+  content: {
+    flex: 10,
+    backgroundColor: "#fff",
+    //alignItems: "center",
+    width: wp("100%"),
+    height: hp("100%")
   },
-  icon: {
-    width: 24,
-    height: 24
+  vSearch: {
+    //position:'absolute',
+    // backgroundColor: "red",
+    width: wp("100%"),
+    //height: hp("15%"),
+    marginTop: hp("15%")
   },
-  MainContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    // backgroundColor: '#F4EFAF',
-    paddingTop: Platform.OS === "ios" ? 20 : 0
-  },
-  bottomViewNav: {
-    width: "100%",
-    height: 50,
-    justifyContent: "center",
-    // alignItems: 'center',
-    position: "absolute",
-    // backgroundColor: '#F4E',
-    bottom: 0
-  },
-  bottomBar: {
+  footer: {
+    height: hp("10%"),
     position: "absolute",
     left: 0,
     right: 0,
     bottom: 0,
-    marginBottom: 610
+    backgroundColor: "#8BC34A"
   },
-  containerLayout: {
-    //width: screenWidth ,
-    //height: screenHeight ,
-    // flex: 1,
-    // width:"100%",
-
-    // backgroundColor:'#4286f4',
-    flex: 1,
-    // flexGrow: 1,
-    flexDirection: "column",
-    width: null,
-    height: null
+  box: {
+    width: 100,
+    height: 100,
+    backgroundColor: "#333",
+    marginBottom: 10
   },
-  box1: {
-    flex: 1
-    // backgroundColor: "#2196F3"
+  vBottomSheet: {
+    //position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+   // backgroundColor: "#8BC34A"
   },
-  box2: {
-    flex: 10,
-    backgroundColor: "#FFF"
-
-    //flex: 0,
-    // flexGrow: 15,
-  },
-  box3: {
-    flex: 1
-    //backgroundColor: "#e3aa1a"
-    //flex: 0,
-    // flexGrow: 1,
-  },
-  searchbarnaja: {
-    height: hp("6%"),
-    width: wp("100%")
-    //backgroundColor: "red"
-  },
-  Picker: {
-    ...Platform.select({
-      android: {
-        height: hp("70%"),
-        width: wp("100%"),
-        backgroundColor: "#e3aa1a"
-      },
-      ios: {
-        
-        height: hp("80%"),
-        width: wp("100%"),
-        backgroundColor: "#e3aa1a"
-      }
-    })
-  },
-  vButton: {
-    ...Platform.select({
-      android: {
-        position: "absolute",
-        top: 0,
-        left: wp("60%"),
-        right: 0,
-        //backgroundColor: "#f4511e",
-        height: hp("6%"),
-        width: wp("30%"),
-        marginTop: hp("44%")
-      },
-      ios: {
-        position: "absolute",
-        top: 0,
-        left: wp("60%"),
-        right: 0,
-        //backgroundColor: "#f4511e",
-        height: hp("6%"),
-        width: wp("30%"),
-        marginTop: hp("44%")
-      }
-    })
-  },
-  vSlider: {
-    ...Platform.select({
-      android: {
-        position: "absolute",
-        marginTop: wp("50%"),
-        //backgroundColor: "green",
-        width: wp("100%"),
-        height: hp("10%")
-      },
-      ios: {
-        position: "absolute",
-        marginTop: wp("70%"),
-        //backgroundColor: "green",
-        width: wp("100%"),
-        height: hp("10%")
-      }
-    })
-  },
-  vButtonMap: {
-    ...Platform.select({
-      android: {
-        position: "absolute",
-        width: wp("30%"),
-        height: hp("5%"),
-        backgroundColor: "#fff",
-        marginTop: hp("50%")
-      },
-      ios: {
-        backgroundColor: "#fff"
-      }
-    })
-  }
-});
-
-var customStyles2 = StyleSheet.create({
-  track: {
-    height: 4,
-    borderRadius: 2
-  },
-  thumb: {
-    width: 40,
-    height: 40,
-    borderRadius: 50 / 2,
-    backgroundColor: "white",
-    borderColor: "#f4511e",
-    borderWidth: 2
+  vPicker: {
+    backgroundColor: "green",
+    width: wp("100%"),
+    height: hp("50%")
   }
 });

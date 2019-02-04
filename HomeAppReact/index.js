@@ -13,10 +13,11 @@ import {
     SelectMultipleGroupButton
   } from "react-native-selectmultiple-button";
 
-  
+import lay from "./testLayout/lay"; 
+import App1 from "./App1";
 
 import navigators from "./src/navigators";
 import multibutton from "./testPicker/multibutton";
 ///Tesr picker
 import Homepicker from "./testPicker/Home";
-AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerComponent(appName, () => App1);
