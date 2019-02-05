@@ -28,7 +28,10 @@ import{
   Header,
   SearchBar, } from "react-native-elements";
 import { Dimensions } from "react-native"
-
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp
+} from "react-native-responsive-screen";
 
 const { width, height } = Dimensions.get("window")
 
@@ -119,28 +122,37 @@ export default class EventBottomNav extends Component {
 
   render() {
     return (
-      <View style={styles.containerLayout}>
-        <Header
-          statusBarProps={{ barStyle: "light-content" }}
-          barStyle="light-content" // or directly
-          leftComponent={{
-            icon: "menu",
-            color: "#fff",
-            onPress: () => {
-              this.props.navigation.openDrawer();
-            }
-          }}
-          centerComponent={{ text: "บ้านใหม่", style: { color: "#fff" } }}
-          containerStyle={{
-            backgroundColor: "#0066CC",
-            justifyContent: "space-around"
-          }}
-        />
-
-        <View style={[styles.box2]} />
-
-        <View style={[styles.BottomNavBar]}>
+      <View style={styles.container}>
+        <View style={[styles.header]}>
+          <Header
+            statusBarProps={{ barStyle: "light-content" }}
+            barStyle="light-content" // or directly
+            leftComponent={{
+              icon: "menu",
+              color: "#fff",
+              onPress: () => {
+                this.props.navigation.openDrawer();
+              }
+            }}
+            centerComponent={{
+              text: "อีเว้นท์",
+              style: { color: "#fff", fontSize: 25, fontWeight: "bold" }
+            }}
+            containerStyle={{
+              backgroundColor: "#0066CC",
+              justifyContent: "space-around",
+              height: hp("15%")
+            }}
+          />
+        </View>
+        {/* Main */}
+        <View style={[styles.content]}>
+          
+        </View>
+        {/* Foot */}
+        <View style={[styles.footer]}>
           <BottomNavigation
+             style={styles.vBottomSheet}
             activeTab={this.state.activeTab}
             onTabPress={this.handleTabPress}
             renderTab={this.renderTab}
@@ -177,86 +189,60 @@ export default class EventBottomNav extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF"
+  flex: 1,
+  flexDirection: "column",
+  justifyContent: "center",
+  backgroundColor: "#010000"
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: "center",
-    margin: 10
+  header: {
+  height: hp("15%"),
+  position: "absolute",
+  left: 0,
+  right: 0,
+  top: 0,
+  backgroundColor: "#03A9F4",
+  zIndex: 10
   },
-  instructions: {
-    textAlign: "center",
-    color: "#333333",
-    marginBottom: 5
+  content: {
+  flex: 10,
+  backgroundColor: "#fff",
+  //alignItems: "center",
+  width: wp("100%"),
+  height: hp("100%")
   },
-  BottomNavBar: {
-    position: "absolute",
-    left: 0,
-    bottom: 0,
-    right: 0,
+  vSearch: {
+  //position:'absolute',
+  // backgroundColor: "red",
+  width: wp("100%"),
+  //height: hp("15%"),
+  marginTop: hp("15%")
   },
-  bottom: {
-    flexDirection: "column",
-    flex: 1
+  footer: {
+  height: hp("7.5%"),
+  position: "absolute",
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: "#8BC34A"
   },
-  icon: {
-    width: 24,
-    height: 24
+  box: {
+  width: 100,
+  height: 100,
+  backgroundColor: "#333",
+  marginBottom: 10
   },
-  MainContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    // backgroundColor: '#F4EFAF',
-    paddingTop: Platform.OS === "ios" ? 20 : 0
+  vBottomSheet: {
+  height: hp("7.5%"),
+  position: "absolute",
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: "#8BC34A"
   },
-  bottomViewNav: {
-    width: "100%",
-    height: 50,
-    justifyContent: "center",
-    // alignItems: 'center',
-    position: "absolute",
-    // backgroundColor: '#F4E',
-    bottom: 0
-  },
-  bottomBar: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-    marginBottom: 610
-  },
-  containerLayout: {
-    //width: screenWidth ,
-    //height: screenHeight ,
-    // flex: 1,
-    // width:"100%",
-
-    // backgroundColor:'#4286f4',
-    flex: 0,
-    flexGrow: 1,
-    flexDirection: "column",
-    width: null,
-    height: null
-  },
-  box1: {
-    flex: 1
-    // backgroundColor: "#2196F3"
-  },
-  box2: {
-    flex: 10,
-    backgroundColor: "#FFF"
-    //flex: 0,
-    // flexGrow: 15,
-  },
-  box3: {
-    flex: 1
-    //backgroundColor: "#e3aa1a"
-    //flex: 0,
-    // flexGrow: 1,
+  vPicker: {
+  backgroundColor: "green",
+  width: wp("100%"),
+  height: hp("50%")
   }
-});
+  });
+

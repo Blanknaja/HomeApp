@@ -38,6 +38,7 @@ import Logotitle from "./Logotitle";
 import Slider from "react-native-slider";
 import Search from "react-native-search-box";
 import ReactNativeItemSelect from "react-native-item-select";
+import SplashScreen from 'react-native-splash-screen'
 
 var { height } = Dimensions.get("window");
 
@@ -65,6 +66,117 @@ const DrawerContent = props => (
     <DrawerItems {...props} />
   </View>
 );
+
+//api
+var api_GetToken = "https://w2m.home.co.th/WSM/token";
+
+
+class Splashscreen extends React.Component{
+
+  constructor(props){
+    super(props);
+
+  
+
+    this.state = {
+
+      jsonData: "",
+      jsonGetTokenType: "",
+      responseJson: [],
+      dataArray: [],
+      dataSource: [],
+      arrayrow: [],
+
+
+
+      //////Current Location
+      latitude: null,
+      longitude: null,
+      error: null,
+
+
+    }
+  }
+  
+  componentDidMount() {
+
+    SplashScreen.show();
+
+  // SplashScreen.show(this, true);
+///////////////Token///////////////////
+    const data = {
+      application: "x-www-form-urlencoded",
+      grant_type: "password",
+      username: "w2mapp",
+      password: "W72xT1hv3ZQmHPkNZ5wM",
+      client_id: "wsmhomei",
+      client_secret: "2bbff14f586fdd94261cf90d679c0ce9"
+    };
+    console.log(data)
+
+    fetch(api_GetToken, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+
+      body:
+        "grant_type=password&username=w2mapp&password=W72xT1hv3ZQmHPkNZ5wM&client_id=wsmhomei&client_secret=2bbff14f586fdd94261cf90d679c0ce9"
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        this.setState({
+          jsonData: responseJson.access_token,
+          jsonGetTokenType: responseJson.token_type
+        });
+        // var a = responseJson;
+
+        if (responseJson != null) {
+          //Alert.alert("get token Complete!");
+          SplashScreen.hide();
+         // SplashScreen.hide(this, true);
+          this.props.navigation.navigate("Home",{
+            Token:this.state.jsonGetTokenType+" "+this.state.jsonData
+          });
+
+          
+        } else {
+          Alert.alert("No Data!");
+        }
+
+        console.log ("Token = "+this.state.jsonGetTokenType+" "+this.state.jsonData)
+        
+      /*  this.props.navigation.navigate("FindLocation", {
+          Token: this.state.jsonGetTokenType+" "+this.state.jsonData
+        
+        });*/
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+      ///////////////End Token///////////
+    // do stuff while splash screen is shown
+      // After having done stuff (such as async tasks) hide the splash screen
+      
+      
+     // SplashScreen.show();
+
+      // this.props.navigation.navigate("Home")
+    
+     // console.log(SplashScreen)
+  }
+
+  render(){
+    return(
+      <View>
+        
+      </View>
+    );
+  }
+
+}
 class HomeScreen extends React.Component {
   static navigationOptions = {
     drawerLabel: "ค้นหาบ้านใหม่",
@@ -79,6 +191,8 @@ class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
 
+
+    this.getLocation = this.getLocation.bind(this);
     this._handleOpenDrawer = this._handleOpenDrawer.bind(this);
     this.state = {
       activeTab: "newHome",
@@ -279,6 +393,29 @@ class HomeScreen extends React.Component {
 
   ////end Search
 
+  getLocation() {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        this.setState({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          error: null
+        });
+        
+
+        if ((this.state.latitude && this.state.longitude)  != null) {
+            Alert.alert("Get Location Complete")
+        }
+
+        // Alert.alert(this.state.latitude.toString())
+      },
+      error => this.setState({ error: error.message }),
+      {// enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 
+        enableHighAccuracy: false, timeout: 5000, maximumAge: 10000 
+      }
+    );
+  }
+
   render() {
     const { search } = this.state;
     return (
@@ -334,7 +471,8 @@ class HomeScreen extends React.Component {
                   <Text style={textStyle}>{item.description}</Text>
                 </View>
               )}
-              onSubmit={item => this.handelgetData(item)}
+             // onSubmit={item => this.handelgetData(item)}
+             onSubmit={item => this.getLocation()}
               multiselect={true}
               countPerRow={3}
               submitBtnTitle="ค้นหา"
@@ -344,31 +482,75 @@ class HomeScreen extends React.Component {
                   ...Platform.select({
                     android: {
                       backgroundColor: "#F44336",
-                      marginTop: hp("15.5%"),
-                      height: hp("6%"),
+                      height: hp("5%"),
                       width: wp("30%"),
-                      marginLeft: wp("10%")
+                      marginLeft: wp("10%"),
+                      marginTop: hp("14%")
+                      //marginBottom:hp("-25%")
                     },
                     ios: {
                       backgroundColor: "#F44336",
-                      marginTop: hp("19%"),
-                      height: hp("6%"),
+                      height: hp("5%"),
                       width: wp("30%"),
-                      marginLeft: wp("10%")
+                      marginLeft: wp("10%"),
+                      marginTop: hp("15%")
                     }
                   })
                 },
                 disabledBtn: { backgroundColor: "#F44336" },
                 tickTxt: { backgroundColor: "#F44336" },
-                activeItemBoxHighlight: { borderColor: "#F44336" }
+                activeItemBoxHighlight: {
+                  borderColor: "#F44336",
+                  backgroundColor: "#84cee8"
+                },
+                itemComponentWrapper: { borderColor: "#F44336" }
+                //btnOpacity:{backgroundColor:'#F44336',borderColor:'#F44336', width:wp("30%"),height:hp("10%"),title:'fewfw'}
               }}
             />
           </View>
+
+          {/* Slider in Main */}
+          <View
+            style={{
+              //backgroundColor: "red",
+              height: hp("10%"),
+              width: wp("100%"),
+              position: "absolute",
+              top: Platform.OS == "ios" ? hp("47%") : hp("49%")
+            }}
+          >
+            <Slider
+              value = {this.state.value}
+              onValueChange={value => this.setState({ value })}
+              trackStyle={customStyles2.track}
+              thumbStyle={customStyles2.thumb}
+              minimumTrackTintColor="#F44336"
+              maximumValue = {10}
+              step = {1}
+            />
+            <Text>
+            ระยะทาง: {this.state.value} กิโลเมตร
+        </Text>
+        {/* <Text> Token = {this.props.navigation.state.params.Token}</Text> */}
+        <Text>Latitude: {this.state.latitude}</Text>
+        <Text>Longitude: {this.state.longitude}</Text>
+        {this.state.error ? <Text>Error: {this.state.error}</Text> : null}
+          </View>
+          {/* Button in main */}
+            <View style = {{position:'absolute',
+                            width:wp("30%"),
+                            height:hp("5%"),
+                            bottom:hp("36%"),
+                            marginLeft:wp("50%"),
+                            backgroundColor:'red'}}>
+            
+
+            </View>
         </View>
         {/* Foot */}
         <View style={[styles.footer]}>
           <BottomNavigation
-             style={styles.vBottomSheet}
+            style={styles.vBottomSheet}
             activeTab={this.state.activeTab}
             onTabPress={this.handleTabPress}
             renderTab={this.renderTab}
@@ -421,6 +603,9 @@ class HomeScreen extends React.Component {
 }
 const MyDrawerNavigator = createDrawerNavigator(
   {
+    SplashScreen:{
+      screen:Splashscreen
+    },
     Home: {
       screen: HomeScreen
     },
@@ -480,12 +665,12 @@ const styles = StyleSheet.create({
     marginTop: hp("15%")
   },
   footer: {
-    height: hp("10%"),
+    height: hp("7.5%"),
     position: "absolute",
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "#8BC34A"
+    backgroundColor: "#fcf4eb"
   },
   box: {
     width: 100,
@@ -494,15 +679,31 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   vBottomSheet: {
-    //position: "absolute",
+    height: hp("7.5%"),
+    position: "absolute",
     left: 0,
     right: 0,
     bottom: 0,
-   // backgroundColor: "#8BC34A"
+    backgroundColor: "#8BC34A"
   },
   vPicker: {
-    backgroundColor: "green",
+    backgroundColor: "#fcf4eb",
     width: wp("100%"),
     height: hp("50%")
+  }
+});
+
+var customStyles2 = StyleSheet.create({
+  track: {
+    height: 4,
+    borderRadius: 2,
+  },
+  thumb: {
+    width: 40,
+    height: 40,
+    borderRadius: 30 / 2,
+    backgroundColor: 'white',
+    borderColor: '#F44336',
+    borderWidth: 2,
   }
 });
