@@ -20,4 +20,5 @@ import navigators from "./src/navigators";
 import multibutton from "./testPicker/multibutton";
 ///Tesr picker
 import Homepicker from "./testPicker/Home";
+import first from "./TestSplash/first";
 AppRegistry.registerComponent(appName, () => App1);

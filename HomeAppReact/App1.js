@@ -38,7 +38,9 @@ import Logotitle from "./Logotitle";
 import Slider from "react-native-slider";
 import Search from "react-native-search-box";
 import ReactNativeItemSelect from "react-native-item-select";
-import SplashScreen from 'react-native-splash-screen'
+//import SplashScreen from 'react-native-splash-screen'
+
+import SplashScreen from 'react-native-splash-screen';
 
 var { height } = Dimensions.get("window");
 
@@ -77,7 +79,6 @@ class Splashscreen extends React.Component{
     super(props);
 
   
-
     this.state = {
 
       jsonData: "",
@@ -100,11 +101,9 @@ class Splashscreen extends React.Component{
   
   componentDidMount() {
 
-    SplashScreen.show();
-
-  // SplashScreen.show(this, true);
+  
 ///////////////Token///////////////////
-    const data = {
+   const data = {
       application: "x-www-form-urlencoded",
       grant_type: "password",
       username: "w2mapp",
@@ -132,45 +131,56 @@ class Splashscreen extends React.Component{
         });
         // var a = responseJson;
 
-        if (responseJson != null) {
+        if ((responseJson != null) &&(this.state.latitude != null)) {
           //Alert.alert("get token Complete!");
-          SplashScreen.hide();
+         // SplashScreen.hide();
          // SplashScreen.hide(this, true);
+         SplashScreen.hide();
           this.props.navigation.navigate("Home",{
-            Token:this.state.jsonGetTokenType+" "+this.state.jsonData
+            Token:this.state.jsonGetTokenType+" "+this.state.jsonData,
+            latitudeUser:this.state.latitude,
+            longitudeUser:this.state.longitude
           });
 
-          
         } else {
           Alert.alert("No Data!");
         }
-
         console.log ("Token = "+this.state.jsonGetTokenType+" "+this.state.jsonData)
         
-      /*  this.props.navigation.navigate("FindLocation", {
-          Token: this.state.jsonGetTokenType+" "+this.state.jsonData
-        
-        });*/
       })
       .catch(error => {
         console.error(error);
       });
 
       ///////////////End Token///////////
-    // do stuff while splash screen is shown
-      // After having done stuff (such as async tasks) hide the splash screen
-      
-      
-     // SplashScreen.show();
 
-      // this.props.navigation.navigate("Home")
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          this.setState({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            error: null
+          });
+          
+          if ((this.state.latitude && this.state.longitude)  != null) {
+              Alert.alert("Get Location Complete")
+
+            
+          }
+  
+          // Alert.alert(this.state.latitude.toString())
+        },
+        error => this.setState({ error: error.message }),
+        {// enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 
+          enableHighAccuracy: false, timeout: 5000, maximumAge: 10000 
+        }
+      );
     
-     // console.log(SplashScreen)
   }
 
   render(){
     return(
-      <View>
+      <View style={{backgroundColor:'red'}}>
         
       </View>
     );
@@ -471,8 +481,8 @@ class HomeScreen extends React.Component {
                   <Text style={textStyle}>{item.description}</Text>
                 </View>
               )}
-             // onSubmit={item => this.handelgetData(item)}
-             onSubmit={item => this.getLocation()}
+              onSubmit={item => this.handelgetData(item)}
+             //onSubmit={item => this.getLocation()}
               multiselect={true}
               countPerRow={3}
               submitBtnTitle="ค้นหา"
@@ -532,8 +542,10 @@ class HomeScreen extends React.Component {
             ระยะทาง: {this.state.value} กิโลเมตร
         </Text>
         {/* <Text> Token = {this.props.navigation.state.params.Token}</Text> */}
-        <Text>Latitude: {this.state.latitude}</Text>
-        <Text>Longitude: {this.state.longitude}</Text>
+        
+
+        <Text>Latitude: {this.props.navigation.state.params.latitudeUser}</Text>
+        <Text>Longitude: {this.props.navigation.state.params.longitudeUser}</Text>
         {this.state.error ? <Text>Error: {this.state.error}</Text> : null}
           </View>
           {/* Button in main */}
@@ -546,6 +558,13 @@ class HomeScreen extends React.Component {
             
 
             </View>
+            
+        {/* <Text>{this.state.single_home_Picker}</Text>
+        <Text>{this.state.Twin_Home_Picker}</Text>
+        <Text>{this.state.TownHome_Picker}</Text>
+        <Text>{this.state.Condo_Picker}</Text>
+        <Text>{this.state.Panid_Picker}</Text>
+        <Text>{this.state.TownHome_Picker}</Text> */}
         </View>
         {/* Foot */}
         <View style={[styles.footer]}>
@@ -562,8 +581,33 @@ class HomeScreen extends React.Component {
   }
   handelgetData(item) {
     console.log(item);
-    console.log(item.description);
-    const data = JSON.stringify(item);
+    
+    
+    let data = item;
+    console.log(data)
+
+    data.forEach(element => {
+        console.log(element.description)
+
+        if (element.description == "บ้านเดี่ยว") {
+            this.setState({single_home_Picker: 'บ้านเดี่ยว'})
+        }else if(element.description == "บ้านแฝด"){
+          this.setState({Twin_Home_Picker:'บ้านแฝด'})
+        }else if(element.description == "ทาวน์เฮ้าส์"){
+          this.setState({TownHouse_Picker:'ทาวน์เฮ้าส์'})
+        }else if(element.description == "คอนโดมิเนียม"){
+          this.setState({Condo_Picker:'คอนโดมิเนียม'})
+        }else if(element.description == "อาคารพาณิชย์"){
+          this.setState({Panid_Picker:'อาคารพาณิชย์'})
+        }else if(element.description == "ทาวน์โฮม"){
+          this.setState({TownHome_Picker:'ทาวน์โฮม                                                                                                 '})
+        }
+    });
+    
+     
+     
+     
+   
 
     /*item.map((function(news , i){
         key ={i},
