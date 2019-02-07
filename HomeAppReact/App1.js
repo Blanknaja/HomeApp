@@ -41,6 +41,7 @@ import ReactNativeItemSelect from "react-native-item-select";
 //import SplashScreen from 'react-native-splash-screen'
 
 import SplashScreen from 'react-native-splash-screen';
+import DetailListview from "./ResultOfFindnewhome/DetailListview";
 
 var { height } = Dimensions.get("window");
 
@@ -74,6 +75,9 @@ var api_GetToken = "https://w2m.home.co.th/WSM/token";
 
 
 class Splashscreen extends React.Component{
+  static navigationOptions = {
+    drawerLabel: () => null
+}
 
   constructor(props){
     super(props);
@@ -102,6 +106,30 @@ class Splashscreen extends React.Component{
   componentDidMount() {
 
   
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        this.setState({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          error: null
+        });
+        
+
+        console.log("Status lattitude = " +this.state.latitude)
+        console.log("Status error = " +this.state.error)
+
+        if ((this.state.latitude && this.state.longitude)  != null) {
+            Alert.alert("Get Location Complete")
+
+        }
+
+        // Alert.alert(this.state.latitude.toString())
+      },
+      error => this.setState({ error: error.message }),
+      {// enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 
+        enableHighAccuracy: false, timeout: 5000, maximumAge: 10000 
+      }
+    );
 ///////////////Token///////////////////
    const data = {
       application: "x-www-form-urlencoded",
@@ -143,7 +171,8 @@ class Splashscreen extends React.Component{
           });
 
         } else {
-          Alert.alert("No Data!");
+          //Alert.alert("No Data!");
+          this.props.navigation.navigate("SplashScreen")
         }
         console.log ("Token = "+this.state.jsonGetTokenType+" "+this.state.jsonData)
         
@@ -154,27 +183,7 @@ class Splashscreen extends React.Component{
 
       ///////////////End Token///////////
 
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          this.setState({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            error: null
-          });
-          
-          if ((this.state.latitude && this.state.longitude)  != null) {
-              Alert.alert("Get Location Complete")
-
-            
-          }
-  
-          // Alert.alert(this.state.latitude.toString())
-        },
-        error => this.setState({ error: error.message }),
-        {// enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 
-          enableHighAccuracy: false, timeout: 5000, maximumAge: 10000 
-        }
-      );
+    
     
   }
 
@@ -209,7 +218,7 @@ class HomeScreen extends React.Component {
       colorIcon: "#fff",
       search: "",
 
-      single_home_Picker: [],
+      single_home_Picker: "",
       Twin_Home_Picker: "",
       TownHouse_Picker: "",
       Condo_Picker: "",
@@ -540,10 +549,9 @@ class HomeScreen extends React.Component {
             />
             <Text>
             ระยะทาง: {this.state.value} กิโลเมตร
-        </Text>
+            </Text>
         {/* <Text> Token = {this.props.navigation.state.params.Token}</Text> */}
         
-
         <Text>Latitude: {this.props.navigation.state.params.latitudeUser}</Text>
         <Text>Longitude: {this.props.navigation.state.params.longitudeUser}</Text>
         {this.state.error ? <Text>Error: {this.state.error}</Text> : null}
@@ -559,12 +567,12 @@ class HomeScreen extends React.Component {
 
             </View>
             
-        {/* <Text>{this.state.single_home_Picker}</Text>
+         {/* <Text>{this.state.single_home_Picker}</Text>
         <Text>{this.state.Twin_Home_Picker}</Text>
         <Text>{this.state.TownHome_Picker}</Text>
         <Text>{this.state.Condo_Picker}</Text>
         <Text>{this.state.Panid_Picker}</Text>
-        <Text>{this.state.TownHome_Picker}</Text> */}
+        <Text>{this.state.TownHome_Picker}</Text>  */}
         </View>
         {/* Foot */}
         <View style={[styles.footer]}>
@@ -579,9 +587,10 @@ class HomeScreen extends React.Component {
       </View>
     );
   }
+
+  ////search
   handelgetData(item) {
     console.log(item);
-    
     
     let data = item;
     console.log(data)
@@ -590,23 +599,55 @@ class HomeScreen extends React.Component {
         console.log(element.description)
 
         if (element.description == "บ้านเดี่ยว") {
-            this.setState({single_home_Picker: 'บ้านเดี่ยว'})
-        }else if(element.description == "บ้านแฝด"){
-          this.setState({Twin_Home_Picker:'บ้านแฝด'})
-        }else if(element.description == "ทาวน์เฮ้าส์"){
-          this.setState({TownHouse_Picker:'ทาวน์เฮ้าส์'})
-        }else if(element.description == "คอนโดมิเนียม"){
-          this.setState({Condo_Picker:'คอนโดมิเนียม'})
-        }else if(element.description == "อาคารพาณิชย์"){
-          this.setState({Panid_Picker:'อาคารพาณิชย์'})
-        }else if(element.description == "ทาวน์โฮม"){
-          this.setState({TownHome_Picker:'ทาวน์โฮม                                                                                                 '})
+          this.props.navigation.navigate("DetailListview", {
+            single_home_Picker: 'บ้านเดี่ยว'
+          });
+        }if(element.description == "บ้านแฝด"){
+          this.props.navigation.navigate("DetailListview", {
+            Twin_Home_Picker: 'บ้านแฝด'
+          });
+        }if(element.description == "ทาวน์เฮ้าส์"){
+          this.props.navigation.navigate("DetailListview", {
+            TownHouse_Picker: 'ทาวน์เฮ้าส์'
+          });
+        }if(element.description == "คอนโดมิเนียม"){
+          this.props.navigation.navigate("DetailListview", {
+            Condo_Picker: 'คอนโดมิเนียม'
+          });
+        }if(element.description == "อาคารพาณิชย์"){
+          this.props.navigation.navigate("DetailListview", {
+            Panid_Picker: 'อาคารพาณิชย์'
+          });
+        }if(element.description == "ทาวน์โฮม"){
+          //this.setState({TownHome_Picker:'ทาวน์โฮม'})
+          ///For fix Pass data
+          //this.state = {TownHome_Picker : 'ทาวน์โฮม'}
+          this.props.navigation.navigate("DetailListview", {
+            TownHome_Picker: 'ทาวน์โฮม'
+          });
         }
+        console.log("บ้านเดี่ยว = "+this.state.single_home_Picker)
     });
+    console.log("Token from first Page = "+this.props.navigation.state.params.Token)
+    console.log("Latitude from first Page =  "+ this.props.navigation.state.params.latitudeUser)
+    console.log("Longtitude from first Page =  "+ this.props.navigation.state.params.longitude)
+
+
     
-     
-     
-     
+     //this.props.navigation.navigate("DetailListview");
+     this.props.navigation.navigate("DetailListview",{
+      Token:this.props.navigation.state.params.Token,
+      latitudeUser:this.props.navigation.state.params.latitudeUser,
+      longitudeUser:this.props.navigation.state.params.longitudeUser,
+      SliderValue:this.state.value,
+
+      /*single_home_Picker:this.state.single_home_Picker,
+      Twin_Home_Picker:this.state.Twin_Home_Picker,
+      TownHouse_Picker:this.state.TownHome_Picker,
+      Condo_Picker:this.state.Condo_Picker,
+      Panid_Picker:this.state.Panid_Picker,
+      TownHome_Picker:this.state.TownHome_Picker,*/
+    });
    
 
     /*item.map((function(news , i){
@@ -649,6 +690,7 @@ const MyDrawerNavigator = createDrawerNavigator(
   {
     SplashScreen:{
       screen:Splashscreen
+    
     },
     Home: {
       screen: HomeScreen
@@ -665,6 +707,9 @@ const MyDrawerNavigator = createDrawerNavigator(
     },
     EventBottomNav: {
       screen: EventBottomNav
+    },
+    DetailListview:{
+      screen:DetailListview
     }
   },
   {
