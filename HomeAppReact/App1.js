@@ -218,12 +218,12 @@ class HomeScreen extends React.Component {
       colorIcon: "#fff",
       search: "",
 
-      single_home_Picker: "",
-      Twin_Home_Picker: "",
-      TownHouse_Picker: "",
-      Condo_Picker: "",
-      Panid_Picker: "",
-      TownHome_Picker: "",
+      single_home_Picker: "บ้านเดี่ยว",
+      Twin_Home_Picker: "บ้านแฝด",
+      TownHouse_Picker: "ทาวน์เฮ้าส์",
+      Condo_Picker: "คอนโดมิเนียม",
+      Panid_Picker: "อาคารพาณิชย์",
+      TownHome_Picker: "ทาวน์โฮม",
       value: 5,
 
       dataPicker: [
@@ -596,43 +596,57 @@ class HomeScreen extends React.Component {
     console.log(data)
 
     data.forEach(element => {
-        console.log(element.description)
+        console.log("ELEMENT = "+element.description)
 
         if (element.description == "บ้านเดี่ยว") {
+
+          console.log("CALL บ้านเดี่ยว")
           this.props.navigation.navigate("DetailListview", {
-            single_home_Picker: 'บ้านเดี่ยว'
+            single_home_Picker: this.state.single_home_Picker
+           // +console.log("ส่งบ้านเดี่ยว = "+this.state.single_home_Picker)
           });
         }if(element.description == "บ้านแฝด"){
+          console.log("CALL บ้านแฝด")
           this.props.navigation.navigate("DetailListview", {
-            Twin_Home_Picker: 'บ้านแฝด'
+            Twin_Home_Picker: this.state.Twin_Home_Picker
+          //  +console.log("ส่งบ้านแฝด = "+this.state.Twin_Home_Picker)
           });
         }if(element.description == "ทาวน์เฮ้าส์"){
+          console.log("CALL ทาวน์เฮ้าส์")
           this.props.navigation.navigate("DetailListview", {
-            TownHouse_Picker: 'ทาวน์เฮ้าส์'
+            TownHouse_Picker: this.state.TownHouse_Picker
           });
         }if(element.description == "คอนโดมิเนียม"){
+          console.log("CALL คอนโดมิเนียม")
           this.props.navigation.navigate("DetailListview", {
-            Condo_Picker: 'คอนโดมิเนียม'
+            Condo_Picker: this.state.Condo_Picker
           });
         }if(element.description == "อาคารพาณิชย์"){
+          console.log("CALL อาคารพาณิชย์")
           this.props.navigation.navigate("DetailListview", {
-            Panid_Picker: 'อาคารพาณิชย์'
+            Panid_Picker: this.state.Panid_Picker
           });
         }if(element.description == "ทาวน์โฮม"){
+          console.log("CALL ทาวน์โฮม")
           //this.setState({TownHome_Picker:'ทาวน์โฮม'})
           ///For fix Pass data
           //this.state = {TownHome_Picker : 'ทาวน์โฮม'}
           this.props.navigation.navigate("DetailListview", {
-            TownHome_Picker: 'ทาวน์โฮม'
+            TownHome_Picker: this.state.TownHome_Picker
           });
         }
-        console.log("บ้านเดี่ยว = "+this.state.single_home_Picker)
+        
     });
     console.log("Token from first Page = "+this.props.navigation.state.params.Token)
     console.log("Latitude from first Page =  "+ this.props.navigation.state.params.latitudeUser)
     console.log("Longtitude from first Page =  "+ this.props.navigation.state.params.longitude)
-
-
+    console.log("Slider = "+this.state.value)
+    //console.log("ส่งบ้านเดี่ยว = "+this.state.single_home_Picker)
+    //console.log("ส่งบ้านแฝด = "+this.state.Twin_Home_Picker)
+    //console.log("ส่งทาวเฮ้า = "+this.state.TownHouse_Picker)
+    //console.log("ส่งคอน = "+this.state.Condo_Picker)
+    //console.log("ส่งพาณิช = "+this.state.Panid_Picker)
+    //console.log("ส่งทาวโฮม = "+this.state.TownHome_Picker)
     
      //this.props.navigation.navigate("DetailListview");
      this.props.navigation.navigate("DetailListview",{
@@ -663,6 +677,8 @@ class HomeScreen extends React.Component {
       }))*/
   }
 
+
+  ///bottomnav
   renderTab = ({ tab, isActive }) => {
     return (
       <FullTab
@@ -674,7 +690,7 @@ class HomeScreen extends React.Component {
       />
     );
   };
-
+//////bottomnav
   renderIcon = iconName => ({ isActive }) => {
     return (
       <Icon
