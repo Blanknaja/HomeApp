@@ -13,6 +13,7 @@ import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
 
 //import org.devio.rn.splashscreen.SplashScreen;
 //import org.devio.rn.splashscreen.SplashScreen;
+//import org.devio.rn.splashscreen.SplashScreen;
 import org.devio.rn.splashscreen.SplashScreen;
 
 public class MainActivity extends ReactActivity {

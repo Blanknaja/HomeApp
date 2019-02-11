@@ -655,12 +655,7 @@ class HomeScreen extends React.Component {
       longitudeUser:this.props.navigation.state.params.longitudeUser,
       SliderValue:this.state.value,
 
-      /*single_home_Picker:this.state.single_home_Picker,
-      Twin_Home_Picker:this.state.Twin_Home_Picker,
-      TownHouse_Picker:this.state.TownHome_Picker,
-      Condo_Picker:this.state.Condo_Picker,
-      Panid_Picker:this.state.Panid_Picker,
-      TownHome_Picker:this.state.TownHome_Picker,*/
+     
     });
    
 
@@ -711,6 +706,10 @@ const MyDrawerNavigator = createDrawerNavigator(
     Home: {
       screen: HomeScreen
     },
+    
+    DetailListview:{
+      screen:DetailListview
+    },
     HomePage: {
       screen: HomePage
     },
@@ -723,9 +722,6 @@ const MyDrawerNavigator = createDrawerNavigator(
     },
     EventBottomNav: {
       screen: EventBottomNav
-    },
-    DetailListview:{
-      screen:DetailListview
     }
   },
   {

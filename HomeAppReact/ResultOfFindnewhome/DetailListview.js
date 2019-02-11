@@ -27,15 +27,11 @@ import BottomNavigation, {
   FullTab
 } from "react-native-material-bottom-navigation";
 import { ScrollView } from "react-native-gesture-handler";
+import HomePage from "../HomePage";
 //import AtoZListView from "react-native-atoz-listview";
 
 var api_ForSearch = "https://w2m.home.co.th/WSM/api/MapNewHomeAPI/";
-const rowHeight = 40;
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-
-
-    
-
 export default class DetailListview extends Component {
   static navigationOptions = {
     drawerLabel: () => null
@@ -43,23 +39,22 @@ export default class DetailListview extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dataSource: [],
-      dataSource1: ds.cloneWithRows([]),
 
+
+      dataSource : [],
+      dataSource1: ds.cloneWithRows([]),
       ////Bottom
       activeTab: "newHome",
-
-      ////Data
-      // Token : this.props.navigation.state.params.Token,
-      // latitudeUser : this.props.navigation.state.params.latitudeUser,
-      // longitudeUser : this.props.navigation.state.params.longitudeUser,
-      // Slider : this.props.navigation.state.params.SliderValue,
-      // single_home_Picker : this.props.navigation.state.params.single_home_Picker,
-      // Twin_Home_Picker : this.props.navigation.state.params.Twin_Home_Picker,
-      // TownHouse_Picker : this.props.navigation.state.params.TownHouse_Picker,
-      // Condo_Picker : this.props.navigation.state.params.Condo_Picker,
-      // Panid_Picker : this.props.navigation.state.params.Panid_Picker,
-      // TownHome_Picker : this.props.navigation.state.params.TownHome_Picker,
+      Token: this.props.navigation.state.params.Token,
+      latitudeUser: this.props.navigation.state.params.latitudeUser,
+      longitudeUser: this.props.navigation.state.params.longitudeUser,
+      SliderValue: this.props.navigation.state.params.SliderValue,
+      single_home: this.props.navigation.state.params.single_home_Picker,
+      Twin_Home: this.props.navigation.state.params.Twin_Home_Picker,
+      Town_House: this.props.navigation.state.params.TownHouse_Picker,
+      Condo: this.props.navigation.state.params.Condo_Picker,
+      Panid: this.props.navigation.state.params.Panid_Picker,
+      TownHome: this.props.navigation.state.params.TownHome_Picker
     };
   }
 
@@ -101,79 +96,76 @@ export default class DetailListview extends Component {
     }
   ];
 
-
-  test = async () =>{
+  FetchData() {
     const Token = this.props.navigation.state.params.Token;
     const latitudeUser = this.props.navigation.state.params.latitudeUser;
     const longitudeUser = this.props.navigation.state.params.longitudeUser;
-    const Slider = this.props.navigation.state.params.SliderValue;
-    const single_home_Picker = this.props.navigation.state.params.single_home_Picker;
-    const Twin_Home_Picker = this.props.navigation.state.params.Twin_Home_Picker;
-    const TownHouse_Picker = this.props.navigation.state.params.TownHouse_Picker;
-    const Condo_Picker = this.props.navigation.state.params.Condo_Picker;
-    const Panid_Picker = this.props.navigation.state.params.Panid_Picker;
-    const TownHome_Picker = this.props.navigation.state.params.TownHome_Picker;
-   
-    console.log("ข้อมูล รับ = " + this.state.dataSource1);
-    console.log("Token รับ = " + Token);
-    console.log("Slider รับ = " + Slider);
-    console.log("บ้านเดี่ยว รับ  = " + single_home_Picker);
-    console.log("รับบ้านแฝด = "+Twin_Home_Picker)
-    console.log("รับทาวเฮ้า = "+TownHouse_Picker)
-    console.log("รับคอน = "+Condo_Picker)
-    console.log("รับพาณิช = "+Panid_Picker)
-    console.log("รับทาวโฮม = "+TownHome_Picker)
+    const SliderValue = this.props.navigation.state.params.SliderValue;
+    const singleHouse = this.props.navigation.state.params.single_home_Picker;
+    const Twin_Home = this.props.navigation.state.params.Twin_Home_Picker;
+    const TownHouse = this.props.navigation.state.params.TownHouse_Picker;
+    const Condo = this.props.navigation.state.params.Condo_Picker;
+    const Panid = this.props.navigation.state.params.Panid_Picker;
+    const TownHome = this.props.navigation.state.params.TownHome_Picker;
 
-    fetch(api_ForSearch, {
+    //console.log(range)
+    fetch("https://w2m.home.co.th/WSM/api/MapNewHomeAPI/", {
       method: "POST",
       headers: {
+        //{this.props.navigation.state.params.Token}
         Authorization: Token,
+        //Authorization: bearer + " " + token,
         "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
       },
+
+      // body:
+      // "MT_ID=43&S_ID=6&sortID=1&latitude=13.8333649&longtitude=100.570419&radius=5&homeType="+singleHouse+"|"+twinHouse+"|"+townHouse+"|"+Condo+"|"+panid+"|"+blank+"|"+townHome
 
       body:
         "MT_ID=43&S_ID=6&sortID=1&latitude=" +
         latitudeUser +
         "&longtitude=" +
-       longitudeUser +
+        longitudeUser +
         "&radius=" +
-        Slider +
+        SliderValue +
         "&homeType=" +
-        single_home_Picker +
+        singleHouse +
         "|" +
-        Twin_Home_Picker +
+        Twin_Home +
         "|" +
-        TownHouse_Picker +
+        TownHouse +
         "|" +
-        Condo_Picker +
+        Condo +
         "|" +
-       Panid_Picker +
+        Panid +
         "|" +
-       TownHome_Picker /*+
-        "|" +
-        townHome +
-        "|" +
-        homeOffice*/
+        TownHome
     })
       .then(response => response.json())
       .then(responseJson => {
+        if (responseJson == "" || responseJson == null) {
+          Alert.alert("Location Not Found!");
+          this.props.navigation.navigate("FindLocation");
+        }
+
         this.setState(
           {
             ///toload json
-            dataSource:responseJson + console.log("datasource = " + responseJson),
+            dataSource: responseJson,
             // arrayrow: responseJson[0].PRICE,
             dataSource1: ds.cloneWithRows(responseJson)
           },
           function() {}
         );
       })
+
       .catch(error => {
         console.error(error);
       });
-
   }
-  componentDidMount(){
-   // this.test();
+
+  componentDidMount() {
+    this.FetchData();
   }
   ///bottomnav
   renderTab = ({ tab, isActive }) => {
@@ -201,43 +193,64 @@ export default class DetailListview extends Component {
 
   handleTabPress = (newTab, oldTab) => {
     this.setState({ activeTab: newTab.key });
-    console.log("newTab =" + newTab.key);
+    console.log("newTab in ListView =" + newTab.key);
     // this.props.navigation.navigate("HomePage");
     console.log("OldTab =" + oldTab.key);
 
     if (newTab.key == "newHome") {
-      console.log("Click to back 1 is call")
+      console.log("Click to back 1 is call");
       this.props.navigation.navigate("Home");
-     //this.props.navigation.goBack("Home")
-     this.setState({
-       single_home_Picker:''
-     })
-     /* this.setState({
-        activeTab: "newHome"
-      });*/
-
-      
-      
+      this.allClear();
     } else if (newTab.key == "1stHome") {
-      this.props.navigation.pop("HomePage");
-      this.setState({
-        activeTab: "newHome"
-      });
+      this.props.navigation.navigate("HomePage");
+      this.setState({ activeTab: "newHome" });
+      this.allClear();
     } else if (newTab.key == "2enHome") {
       this.props.navigation.navigate("SecondHouseBottomNav");
       this.setState({ activeTab: "newHome" });
+      this.allClear();
     } else if (newTab.key == "news") {
       this.props.navigation.navigate("NewsBottomNav");
       this.setState({ activeTab: "newHome" });
+      this.allClear();
     } else if (newTab.key == "event") {
       this.props.navigation.navigate("EventBottomNav");
       this.setState({ activeTab: "newHome" });
+      this.allClear();
     }
   };
 
-  render() {
+  allClear() {
+    if (this.props.navigation.state.params.single_home_Picker != null) {
+      this.props.navigation.state.params.single_home_Picker = "";
+    }
+    if (this.props.navigation.state.params.Twin_Home_Picker != null) {
+      this.props.navigation.state.params.Twin_Home_Picker = "";
+    }
+    if (this.props.navigation.state.params.TownHouse_Picker != null) {
+      this.props.navigation.state.params.TownHouse_Picker = "";
+    }
+    if (this.props.navigation.state.params.Condo_Picker != null) {
+      this.props.navigation.state.params.Condo_Picker = "";
+    }
+    if (this.props.navigation.state.params.Panid_Picker != null) {
+      this.props.navigation.state.params.Panid_Picker = "";
+    }
+    if (this.props.navigation.state.params.TownHome_Picker != null) {
+      this.props.navigation.state.params.TownHome_Picker = "";
+    }
+    /* this.setState({
+      single_home:"",
+      Twin_Home:"",
+      Town_House:"",
+      Condo:"",
+      Panid:"",
+      TownHome:"",
+   
+    })*/
+  }
 
-    
+  render() {
     return (
       <View style={styles.container}>
         <View style={[styles.header]}>
@@ -262,10 +275,10 @@ export default class DetailListview extends Component {
             }}
           />
         </View>
-       
+
         {/* Main */}
         <View style={[styles.content]}>
-          <Button  onPress={this.test.bind(this)} title = "wfwfe" style={{marginTop: 100 }}></Button>
+        <Button  style ={{marginTop : hp("20%")}} onPress ={this.FetchData.bind(this)}></Button>
           <ListView
             style={{ alignSelf: "stretch" }}
             dataSource={this.state.dataSource1}
@@ -296,9 +309,20 @@ export default class DetailListview extends Component {
             renderSeparator={() => <View style={styleslistView.separator} />}
             enableEmptySections={true}
           />
-          
-        </View>
+          {/* <Text> Token = {this.props.navigation.state.params.Token}</Text>
+        <Text>Latitude: {this.props.navigation.state.params.latitudeUser}</Text>
+        <Text>Longitude: {this.props.navigation.state.params.longitudeUser}</Text>
+        <Text>Slider : {this.props.navigation.state.params.SliderValue}</Text>
+        <Text>บ้านเดี่ยว : {this.props.navigation.state.params.single_home_Picker}</Text>
+        <Text>บ้านเดี่ยว : {this.props.navigation.state.params.Twin_Home_Picker}</Text>
+        <Text>บ้านเดี่ยว : {this.props.navigation.state.params.TownHouse_Picker}</Text>
+        <Text>บ้านเดี่ยว : {this.props.navigation.state.params.Condo_Picker}</Text>
+        <Text>บ้านเดี่ยว : {this.props.navigation.state.params.Panid_Picker}</Text>
+        <Text>บ้านเดี่ยว : {this.props.navigation.state.params.TownHome_Picker}</Text> 
+        <Text>-------------------------------------------------------------</Text> */}
         
+        </View>
+
         {/* Foot */}
         <View style={[styles.footer]}>
           <BottomNavigation
@@ -462,4 +486,25 @@ const styleslistView = StyleSheet.create({
         <Text>บ้านเดี่ยว : {this.props.navigation.state.params.Condo_Picker}</Text>
         <Text>บ้านเดี่ยว : {this.props.navigation.state.params.Panid_Picker}</Text>
         <Text>บ้านเดี่ยว : {this.props.navigation.state.params.TownHome_Picker}</Text> */
+}
+
+{
+  /* <Text> textInComponent </Text>
+        <Text> Token = {this.props.navigation.state.params.Token}</Text>
+        <Text>Latitude: {this.props.navigation.state.params.latitudeUser}</Text>
+        <Text>Longitude: {this.props.navigation.state.params.longitudeUser}</Text>
+        <Text>Slider : {this.props.navigation.state.params.SliderValue}</Text>
+        <Text>บ้านเดี่ยว : {this.props.navigation.state.params.single_home_Picker}</Text>
+        <Text>บ้านเดี่ยว : {this.props.navigation.state.params.Twin_Home_Picker}</Text>
+        <Text>บ้านเดี่ยว : {this.props.navigation.state.params.TownHouse_Picker}</Text>
+        <Text>บ้านเดี่ยว : {this.props.navigation.state.params.Condo_Picker}</Text>
+        <Text>บ้านเดี่ยว : {this.props.navigation.state.params.Panid_Picker}</Text>
+        <Text>บ้านเดี่ยว : {this.props.navigation.state.params.TownHome_Picker}</Text> 
+        <Text>-------------------------------------------------------------</Text>
+        <Text>state : {this.state.single_home}</Text>
+        <Text>state Twin_Home : {this.state.Twin_Home}</Text>
+        <Text>state Town_House : {this.state.Town_House}</Text>
+        <Text>state condo : {this.state.Condo}</Text>
+        <Text>state  Panid: {this.state.Panid}</Text>
+        <Text>state Town Home : {this.state.TownHome}</Text> */
 }

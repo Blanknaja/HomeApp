@@ -16,9 +16,12 @@ import {
 import lay from "./testLayout/lay"; 
 import App1 from "./App1";
 
-import navigators from "./src/navigators";
-import multibutton from "./testPicker/multibutton";
+//import navigators from "./src/navigators";
+//import multibutton from "./testPicker/multibutton";
 ///Tesr picker
-import Homepicker from "./testPicker/Home";
-import first from "./TestSplash/first";
+//import Homepicker from "./testPicker/Home";
+//import first from "./TestSplash/first";
+import  MyNavigation  from "./MyNavigation/MainNavigation";
+
+
 AppRegistry.registerComponent(appName, () => App1);
