@@ -1,3 +1,4 @@
+'use strict';
 import React, { Component } from "react";
 import {
   View,
@@ -8,7 +9,9 @@ import {
   Image,
   ListView,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert,
+
 } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -30,17 +33,25 @@ import { ScrollView } from "react-native-gesture-handler";
 import HomePage from "../HomePage";
 //import AtoZListView from "react-native-atoz-listview";
 
+
 var api_ForSearch = "https://w2m.home.co.th/WSM/api/MapNewHomeAPI/";
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+
+
 export default class DetailListview extends Component {
   static navigationOptions = {
     drawerLabel: () => null
   };
+
   constructor(props) {
+    console.log("constructor  Call")
     super(props);
+    
+    
     this.state = {
-
-
+      
+      
+      arraydataSource1: [],
       dataSource : [],
       dataSource1: ds.cloneWithRows([]),
       ////Bottom
@@ -107,6 +118,7 @@ export default class DetailListview extends Component {
     const Condo = this.props.navigation.state.params.Condo_Picker;
     const Panid = this.props.navigation.state.params.Panid_Picker;
     const TownHome = this.props.navigation.state.params.TownHome_Picker;
+    
 
     //console.log(range)
     fetch("https://w2m.home.co.th/WSM/api/MapNewHomeAPI/", {
@@ -145,7 +157,7 @@ export default class DetailListview extends Component {
       .then(responseJson => {
         if (responseJson == "" || responseJson == null) {
           Alert.alert("Location Not Found!");
-          this.props.navigation.navigate("FindLocation");
+         // this.props.navigation.navigate("FindLocation");
         }
 
         this.setState(
@@ -153,7 +165,9 @@ export default class DetailListview extends Component {
             ///toload json
             dataSource: responseJson,
             // arrayrow: responseJson[0].PRICE,
-            dataSource1: ds.cloneWithRows(responseJson)
+           dataSource1: ds.cloneWithRows(responseJson),
+           
+          arraydataSource1 : responseJson
           },
           function() {}
         );
@@ -164,8 +178,18 @@ export default class DetailListview extends Component {
       });
   }
 
+
+  componentWillMount(){
+    console.log("componentWill Call")
+  }
+
   componentDidMount() {
+    console.log("ComponentDid Call")
+    console.log("Status datasource1 In Did : "+ this.state.dataSource1)
+   
     this.FetchData();
+
+    
   }
   ///bottomnav
   renderTab = ({ tab, isActive }) => {
@@ -201,6 +225,7 @@ export default class DetailListview extends Component {
       console.log("Click to back 1 is call");
       this.props.navigation.navigate("Home");
       this.allClear();
+      
     } else if (newTab.key == "1stHome") {
       this.props.navigation.navigate("HomePage");
       this.setState({ activeTab: "newHome" });
@@ -238,7 +263,15 @@ export default class DetailListview extends Component {
     }
     if (this.props.navigation.state.params.TownHome_Picker != null) {
       this.props.navigation.state.params.TownHome_Picker = "";
-    }
+    }/*if(this.state.arraydataSource1 != []){
+      console.log("eieie call")
+      this.state.arraydataSource1 = ds.cloneWithRows([])
+    }if (this.state.dataSource != []) {
+      this.state.dataSource = ds.cloneWithRows([])
+      
+    }if (this.state.dataSource1 != []) {
+      this.state.dataSource1 = ds.cloneWithRows([]);
+    }*/
     /* this.setState({
       single_home:"",
       Twin_Home:"",
@@ -250,7 +283,23 @@ export default class DetailListview extends Component {
     })*/
   }
 
+  sentDataToMap(){
+    this.props.navigation.navigate("Map")
+  }
+
+  clickedItemText(clickedItem) {
+   // this.props.navigation.navigate("Item", { item: clickedItem });
+    //Alert.alert(clickedItem);
+    console.log("Click Item = "+clickedItem.PROJECT_NAME)
+  }
+
   render() {
+    console.log("Render Call")
+    console.log("datasource1 = " +this.state.dataSource1)
+    console.log("arraydatasource = " +this.state.arraydataSource1)
+
+    
+
     return (
       <View style={styles.container}>
         <View style={[styles.header]}>
@@ -278,14 +327,15 @@ export default class DetailListview extends Component {
 
         {/* Main */}
         <View style={[styles.content]}>
-        <Button  style ={{marginTop : hp("20%")}} onPress ={this.FetchData.bind(this)}></Button>
           <ListView
-            style={{ alignSelf: "stretch" }}
-            dataSource={this.state.dataSource1}
+            style={{ alignSelf: "stretch" , height :hp("100%") ,marginTop: hp("15%") }}
+           dataSource={this.state.dataSource1}
+           // dataSource ={this.state.dataSource.cloneWithRows(this.state.arraydataSource1)}
             renderRow={rowData => (
               <TouchableOpacity
                 style={styleslistView.navBarLeftButton}
                 activeOpacity={0.4}
+                onPress={this.clickedItemText.bind(this, rowData)}
                 //onPress={this.clickedItemText.bind(this, rowData)}
               >
                 <Image
@@ -321,6 +371,12 @@ export default class DetailListview extends Component {
         <Text>บ้านเดี่ยว : {this.props.navigation.state.params.TownHome_Picker}</Text> 
         <Text>-------------------------------------------------------------</Text> */}
         
+        {/* view botton */}
+          <View style ={styles.button_bot}>
+            {/* <Button onPress ={this.FetchData.bind(this)}></Button> */}
+            <Button type ='outline' title='ค้นหา' onPress ={this.FetchData.bind(this)}></Button>
+            <Button type ='outline' title='Map' onPress ={this.sentDataToMap.bind(this)}></Button>
+          </View>
         </View>
 
         {/* Foot */}
@@ -394,6 +450,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#fcf4eb",
     width: wp("100%"),
     height: hp("50%")
+  },
+  button_bot:{
+    marginBottom: hp("7.5%"),
+    //backgroundColor: 'green',
+    height : hp("7%"),
+    width : wp("50%"),
+    marginLeft: wp("25%"),
+    //alignItems : 'center'
+   // position: 'absolute',
+    //bottom : hp("7.5%")
+
   }
 });
 
@@ -408,14 +475,14 @@ const styleslistView = StyleSheet.create({
     fontSize: 20,
     textAlign: "center",
     margin: 10,
-    fontSize: 30,
+   // fontSize: 30,
     color: "blue",
     fontWeight: "bold",
     marginTop: 40
   },
   instructions: {
     textAlign: "center",
-    color: "#333333",
+    //color: "#333333",
     marginBottom: 5,
     color: "red"
   },

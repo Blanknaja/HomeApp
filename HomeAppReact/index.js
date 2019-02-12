@@ -23,5 +23,6 @@ import App1 from "./App1";
 //import first from "./TestSplash/first";
 import  MyNavigation  from "./MyNavigation/MainNavigation";
 
+import showMap from "./Map/showMap";
 
 AppRegistry.registerComponent(appName, () => App1);

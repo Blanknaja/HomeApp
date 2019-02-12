@@ -42,6 +42,7 @@ import ReactNativeItemSelect from "react-native-item-select";
 
 import SplashScreen from 'react-native-splash-screen';
 import DetailListview from "./ResultOfFindnewhome/DetailListview";
+import showMap from "./Map/showMap";
 
 var { height } = Dimensions.get("window");
 
@@ -119,7 +120,8 @@ class Splashscreen extends React.Component{
         console.log("Status error = " +this.state.error)
 
         if ((this.state.latitude && this.state.longitude)  != null) {
-            Alert.alert("Get Location Complete")
+          //  Alert.alert("Get Location Complete")
+          console.log("Not Problem found!")
 
         }
 
@@ -196,6 +198,9 @@ class Splashscreen extends React.Component{
   }
 
 }
+
+var api_ForSearch = "https://w2m.home.co.th/WSM/api/MapNewHomeAPI/";
+
 class HomeScreen extends React.Component {
   static navigationOptions = {
     drawerLabel: "ค้นหาบ้านใหม่",
@@ -435,6 +440,7 @@ class HomeScreen extends React.Component {
     );
   }
 
+
   render() {
     const { search } = this.state;
     return (
@@ -501,17 +507,25 @@ class HomeScreen extends React.Component {
                   ...Platform.select({
                     android: {
                       backgroundColor: "#F44336",
+                    //  height: hp("5%"),
+                    //  width: wp("30%"),
+                    //  marginLeft: wp("10%"),
+
+
                       height: hp("5%"),
-                      width: wp("30%"),
-                      marginLeft: wp("10%"),
+                      width: wp("50%"),
+                      marginLeft: wp("25%"),
                       marginTop: hp("14%")
                       //marginBottom:hp("-25%")
                     },
                     ios: {
                       backgroundColor: "#F44336",
+                     // height: hp("5%"),
+                     // width: wp("30%"),
+                      //marginLeft: wp("10%"),
                       height: hp("5%"),
-                      width: wp("30%"),
-                      marginLeft: wp("10%"),
+                      width: wp("50%"),
+                      marginLeft: wp("25%"),
                       marginTop: hp("15%")
                     }
                   })
@@ -547,17 +561,20 @@ class HomeScreen extends React.Component {
               maximumValue = {10}
               step = {1}
             />
-            <Text>
+            <Text style={{fontWeight :'bold'}}>
             ระยะทาง: {this.state.value} กิโลเมตร
             </Text>
         {/* <Text> Token = {this.props.navigation.state.params.Token}</Text> */}
         
-        <Text>Latitude: {this.props.navigation.state.params.latitudeUser}</Text>
+        {/* for test data */}
+        
+        {/* <Text>Latitude: {this.props.navigation.state.params.latitudeUser}</Text>
         <Text>Longitude: {this.props.navigation.state.params.longitudeUser}</Text>
-        {this.state.error ? <Text>Error: {this.state.error}</Text> : null}
+        {this.state.error ? <Text>Error: {this.state.error}</Text> : null} */}
+         
           </View>
           {/* Button in main */}
-            <View style = {{position:'absolute',
+            {/* <View style = {{position:'absolute',
                             width:wp("30%"),
                             height:hp("5%"),
                             bottom:hp("36%"),
@@ -565,7 +582,7 @@ class HomeScreen extends React.Component {
                             backgroundColor:'red'}}>
             
 
-            </View>
+            </View> */}
             
          {/* <Text>{this.state.single_home_Picker}</Text>
         <Text>{this.state.Twin_Home_Picker}</Text>
@@ -573,6 +590,7 @@ class HomeScreen extends React.Component {
         <Text>{this.state.Condo_Picker}</Text>
         <Text>{this.state.Panid_Picker}</Text>
         <Text>{this.state.TownHome_Picker}</Text>  */}
+        
         </View>
         {/* Foot */}
         <View style={[styles.footer]}>
@@ -722,6 +740,9 @@ const MyDrawerNavigator = createDrawerNavigator(
     },
     EventBottomNav: {
       screen: EventBottomNav
+    },
+    Map:{
+      screen: showMap
     }
   },
   {
