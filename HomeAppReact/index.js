@@ -25,4 +25,6 @@ import  MyNavigation  from "./MyNavigation/MainNavigation";
 
 import showMap from "./Map/showMap";
 
-AppRegistry.registerComponent(appName, () => App1);
+import Mainnavigation from './Structure/MainNavigation';
+
+AppRegistry.registerComponent(appName, () => Mainnavigation);

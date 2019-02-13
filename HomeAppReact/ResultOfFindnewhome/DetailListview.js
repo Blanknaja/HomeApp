@@ -291,6 +291,12 @@ export default class DetailListview extends Component {
    // this.props.navigation.navigate("Item", { item: clickedItem });
     //Alert.alert(clickedItem);
     console.log("Click Item = "+clickedItem.PROJECT_NAME)
+
+    this.props.navigation.navigate("Map",{
+      latFromList : clickedItem.MARK_LAT_C,
+      langFromList : clickedItem.MARK_LON_C,
+      dataSourceFromList : this.state.dataSource, 
+    })
   }
 
   render() {

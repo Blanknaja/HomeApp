@@ -7,7 +7,7 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp
   } from "react-native-responsive-screen";
-
+  import { Header, } from "react-native-elements";
 export default class showMap extends Component {
     static navigationOptions = {
         drawerLabel: () => null
@@ -33,11 +33,41 @@ export default class showMap extends Component {
     this.setState({ region });
   }
   render() {
-      SplashScreen.hide();
+     // SplashScreen.hide();
       console.log("Call  Render")
+      const latFromList = parseFloat(this.props.navigation.state.params.latFromList);
+      const langFromList = parseFloat(this.props.navigation.state.params.langFromList);
+      const NamePlace = this.props.navigation.state.params.dataSourceFromList[0].PROJECT_NAME;
+      const Description = this.props.navigation.state.params.dataSourceFromList[0].PRJ_TYPE;
     return (
     <View style ={styles.container}>
-        <View style = {{height : hp("30%"),width : wp("100%"),backgroundColor : '#fff'}}>
+        {/* <View style = {{height : hp("30%"),width : wp("100%"),backgroundColor : '#fff'}}>
+          <Text>{this.props.navigation.state.params.dataSourceFromList[0].PROJECT_NAME}</Text>
+        </View> */}
+        <View style ={styles.header}>
+        <View style={[styles.header]}>
+          <Header
+            statusBarProps={{ barStyle: "light-content" }}
+            barStyle="light-content" // or directly
+            leftComponent={{
+              icon: "menu",
+              color: "#fff",
+              onPress: () => {
+               // this.props.navigation.goBack();
+              }
+            }}
+            centerComponent={{
+              text: "รายการบ้านใหม่",
+              style: { color: "#fff", fontSize: 25, fontWeight: "bold" }
+            }}
+            containerStyle={{
+             // backgroundColor: "#0066CC",
+              backgroundColor: 'rgba(200, 52, 52, 0.8)',
+              justifyContent: "space-around",
+              height: hp("15%")
+            }}
+          />
+        </View>
 
         </View>
         <MapView
@@ -45,15 +75,23 @@ export default class showMap extends Component {
           initialRegion={{
             //  this.props.navigation.state.params.item.PROJECT_NAME
             // initial region set to Bileto
-             latitude: 13.8334,
-             longitude: 100.5704,
+             latitude: latFromList,
+             longitude: langFromList,
 
            // latitude: lat,
            // longitude: lang,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421
           }}>
+          <MapView.Marker
+            coordinate = {{
+              latitude : latFromList,
+              longitude : langFromList
+            }}
+            title={NamePlace}
+            description = {Description}>
 
+          </MapView.Marker>
         </MapView>
     </View>    
     );
@@ -76,7 +114,8 @@ const styles = StyleSheet.create({
       left: 0,
       right: 0,
       top: 0,
-      backgroundColor: "#03A9F4",
+     // backgroundColor: "#03A9F4",
+      backgroundColor : 'rgba(200, 52, 52, 0.8)',
       zIndex: 10
     },
     content: {
